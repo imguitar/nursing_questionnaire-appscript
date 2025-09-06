@@ -1,303 +1,691 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>แบบประเมินสุขภาพจิตผู้สูงอายุฉบับสั้น (T-GMHA-15)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root{
-      --primary:#2196F3; --primary-dark:#1976D2; --accent:#4a90e2; --accent-2:#7b68ee;
-      --bg-grad:linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-      --tile-grad:linear-gradient(135deg,#6366f1,#3b82f6);
-      --text:#0f172a; --muted:#64748b; --paper:#ffffff;
-      --ring:#4f46e5; --border:#e0e0e0;
-      --shadow:0 20px 40px rgba(0,0,0,.10);
-      --shadow-sm:0 1px 2px rgba(0,0,0,.06),0 4px 10px rgba(0,0,0,.08);
-      --shadow-lg:0 6px 18px rgba(0,0,0,.16);
-    }
-    body{font-family:'Sarabun',ui-sans-serif,system-ui; background:var(--bg-grad); min-height:100vh; padding:20px; color:var(--text)}
-    .container{max-width:960px;margin:0 auto;background:var(--paper);border-radius:15px;box-shadow:var(--shadow);overflow:hidden}
-
-    /* HEADER */
-    .header{background:linear-gradient(45deg,var(--primary),var(--primary-dark));color:#fff;padding:28px;text-align:center}
-    .header h1{font-size:2.1em;margin-bottom:6px}
-    .header .subtitle{font-size:1.15em;opacity:.95}
-
-    /* PAGES */
-    .content{padding:34px}
-    .page{display:none}
-    .page.active{display:block}
-
-    /* LANDING (PAGE 1) */
-    .landing-wrap{display:grid;gap:18px}
-    @media (min-width:640px){.landing-wrap{grid-template-columns:repeat(2,1fr)}}
-    .tile{display:flex;flex-direction:column;justify-content:center;min-height:160px;padding:22px 24px;border-radius:18px;
-      background:var(--tile-grad); color:#fff; text-decoration:none;box-shadow:var(--shadow-sm);cursor:pointer;
-      transition:transform .18s ease, box-shadow .18s ease}
-    .tile:hover{transform:translateY(-2px); box-shadow:var(--shadow-lg)}
-    .tile:focus{outline:3px solid var(--ring); outline-offset:3px}
-    .tile-label{font-weight:700;font-size:1.35em}
-    .tile-sub{opacity:.9;margin-top:6px}
-
-    /* SHARED BLOCKS */
-    .instructions{line-height:1.8;color:#333;margin-bottom:24px}
-    .instructions h3{color:var(--primary);margin:18px 0 10px}
-    .instructions ul{margin-left:20px;margin-bottom:12px}
-
-    .question-container{background:#f8f9fa;border-radius:10px;padding:20px;margin-bottom:20px;border-left:5px solid var(--primary)}
-    .question{font-size:1.3em;margin-bottom:12px;color:#333;font-weight:500}
-    .options{display:grid;gap:10px}
-    .option{display:flex;align-items:center;padding:12px;background:#fff;border-radius:8px;border:2px solid #e0e0e0;cursor:pointer;transition:.2s}
-    .option:hover{border-color:var(--primary);background:#e3f2fd}
-    .option input[type=radio]{margin-right:12px;accent-color:var(--primary);transform:scale(1.1)}
-
-    .btn{background:linear-gradient(45deg,var(--primary),var(--primary-dark));color:#fff;border:none;padding:14px 26px;border-radius:24px;font-size:1.05em;cursor:pointer;transition:.2s;margin:8px}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(33,150,243,.3)}
-    .btn:disabled{background:#ccc;cursor:not-allowed;transform:none}
-
-    .text-center{text-align:center}
-    .progress-bar{width:100%;height:8px;background:#e0e0e0;border-radius:4px;margin-bottom:20px;overflow:hidden}
-    .progress{height:100%;background:linear-gradient(45deg,var(--primary),var(--primary-dark));transition:width .3s;border-radius:4px}
-
-    /* RESULTS */
-    .result-card{padding:26px;border-radius:15px;margin:18px 0;text-align:center}
-    .result-excellent{background:linear-gradient(135deg,#d4edda,#c3e6cb);border:2px solid #28a745}
-    .result-normal{background:linear-gradient(135deg,#cce5ff,#b3d9ff);border:2px solid var(--primary)}
-    .result-below{background:linear-gradient(135deg,#fff3cd,#ffeaa7);border:2px solid #ffc107}
-    .result-score{font-size:2.6em;font-weight:700;margin-bottom:8px}
-    .result-title{font-size:1.35em;margin-bottom:10px;font-weight:700}
-    .result-description{font-size:1.05em;line-height:1.6;margin-bottom:16px}
-    .recommendations{background:#fff;padding:18px;border-radius:10px;margin-top:16px;text-align:left}
-    .recommendations h4{color:var(--primary);margin-bottom:10px}
-    .warning-box{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:15px;margin:16px 0}
-    .warning-box h4{color:#856404;margin-bottom:8px}
-
-    /* PAGE 4: ADVICE */
-    .advice-grid{display:grid;gap:14px}
-    @media (min-width:680px){.advice-grid{grid-template-columns:repeat(2,1fr)}}
-    .advice-card{background:#f8f9fa;border:1px solid var(--border);padding:16px;border-radius:12px}
-    .advice-card h4{color:var(--primary);margin-bottom:8px}
-    .advice-card ul{margin-left:18px}
-
-    @media (max-width:768px){.container{margin:10px;border-radius:10px}.header{padding:22px}.header h1{font-size:1.8em}.content{padding:20px}}
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>แบบประเมินสุขภาพจิตผู้สูงอายุฉบับสั้น</h1>
-      <p class="subtitle">(T-GMHA-15) · Thai Geriatric Mental Health Assessment Tool</p>
-    </div>
-
-    <!-- PAGE 1 : LANDING -->
-    <div id="page1" class="page active">
-      <div class="content">
-        <div class="landing-wrap" aria-label="เมนูหลัก">
-          <a class="tile" tabindex="0" role="button" onclick="goTo(2)">
-            <span class="tile-label">เริ่มทำแบบประเมิน</span>
-            <span class="tile-sub">ไปยังหน้า 2: แบบประเมิน (15 ข้อ)</span>
-          </a>
-          <a class="tile" tabindex="0" role="button" onclick="goTo(4)">
-            <span class="tile-label">คำแนะนำ</span>
-            <span class="tile-sub">ไปยังหน้า 4: แนวทางส่งเสริมสุขภาพจิต</span>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE 2 : ASSESSMENT -->
-    <div id="page2" class="page">
-      <div class="content">
-        <div class="instructions">
-          <h3>คำชี้แจงโดยย่อ</h3>
-          <p>ในช่วง <strong>1 เดือนที่ผ่านมา</strong> เลือกคำตอบที่ตรงกับความเป็นจริงมากที่สุด (ไม่เลย/เล็กน้อย/มาก/มากที่สุด)</p>
-        </div>
-        <div class="progress-bar"><div class="progress" id="progressBar" style="width:0%"></div></div>
-        <p class="text-center" style="margin-bottom:16px;font-size:1.15em">คำถามที่ <span id="currentQuestion">1</span> จาก 15</p>
-        <form id="assessmentForm">
-          <div id="questionsContainer"></div>
-          <div id="completedMessage" style="display:none;padding:16px;background:#e8f5e9;border:1px solid #43a047;border-radius:10px;color:#2e7d32;font-weight:700;text-align:center;margin-top:16px">
-            ✅ คุณได้ตอบคำถามครบทั้ง 15 ข้อแล้ว
-          </div>
-        </form>
-        <div class="text-center">
-          <button class="btn" id="submitBtn" onclick="calculateResult()" disabled>ดูผลการประเมิน</button>
-          <button class="btn" onclick="goTo(1)" type="button">กลับหน้าเมนู</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE 3 : RESULTS -->
-    <div id="page3" class="page">
-      <div class="content">
-        <div id="resultContent"></div>
-        <div class="text-center">
-          <button class="btn" onclick="resetAssessment()">ทำแบบประเมินใหม่</button>
-          <button class="btn" onclick="window.print()">พิมพ์ผลลัพธ์</button>
-          <button class="btn" onclick="goTo(4)">ดูคำแนะนำ</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE 4 : RECOMMENDATIONS / ADVICE -->
-    <div id="page4" class="page">
-      <div class="content">
-        <h3 style="color:var(--primary);margin-bottom:12px">แนวทางส่งเสริมสุขภาพจิต 5 มิติ (ตัวอย่าง)</h3>
-        <div class="advice-grid">
-          <div class="advice-card">
-            <h4>1) กาย</h4>
-            <ul>
-              <li>เดินเบา ๆ 20–30 นาที วันละ 1 ครั้ง</li>
-              <li>ยืดเหยียดกล้ามเนื้อ 10 นาทีหลังตื่นนอน</li>
-              <li>นอนให้พอ 7–8 ชั่วโมง</li>
-            </ul>
-          </div>
-          <div class="advice-card">
-            <h4>2) ใจ</h4>
-            <ul>
-              <li>หายใจลึก ๆ 4-4-4 วันละ 3 รอบ</li>
-              <li>บันทึกความขอบคุณ 3 ข้อ/วัน</li>
-              <li>ฟังเพลงที่ชอบ 10–15 นาที</li>
-            </ul>
-          </div>
-          <div class="advice-card">
-            <h4>3) ปัญญา</h4>
-            <ul>
-              <li>อ่านหนังสือ/บทความสั้น ๆ วันละ 10 นาที</li>
-              <li>เกมฝึกสมอง (ตัวต่อ, ซูโดกุ) 10 นาที</li>
-            </ul>
-          </div>
-          <div class="advice-card">
-            <h4>4) สังคม</h4>
-            <ul>
-              <li>ทักทายและพูดคุยกับคนใกล้ตัววันละ 1 ครั้ง</li>
-              <li>โทรหาเพื่อน/ญาติสัปดาห์ละ 1–2 ครั้ง</li>
-            </ul>
-          </div>
-          <div class="advice-card">
-            <h4>5) จิตวิญญาณ/ความหมาย</h4>
-            <ul>
-              <li>ทำกิจกรรมที่มีความหมายเล็ก ๆ ทุกวัน (เช่น รดน้ำต้นไม้)</li>
-              <li>ทำความดีง่าย ๆ สัปดาห์ละ 1 ครั้ง</li>
-            </ul>
-          </div>
-        </div>
-        <div class="text-center" style="margin-top:16px">
-          <button class="btn" onclick="goTo(1)">กลับหน้าเมนู</button>
-          <button class="btn" onclick="goTo(2)">ทำแบบประเมิน</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // -------- NAV UTILS --------
-    function goTo(n){
-      for(const el of document.querySelectorAll('.page')) el.classList.remove('active');
-      document.getElementById('page'+n).classList.add('active');
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    // -------- QUESTIONS --------
-    const questions=[
-      {id:1,question:"ท่านรู้สึกว่าชีวิตท่านมีความหมาย (มีคุณค่า มีประโยชน์)",isReverse:false},
-      {id:2,question:"ท่านรู้สึกว่าชีวิตของท่านมีความสุข",isReverse:false},
-      {id:3,question:"ท่านรู้สึกกังวลใจ",isReverse:true},
-      {id:4,question:"ท่านพอใจต่อการผูกมิตรหรือเข้ากับบุคคลอื่น",isReverse:false},
-      {id:5,question:"ท่านมีสัมพันธภาพที่ดีกับเพื่อนบ้าน",isReverse:false},
-      {id:6,question:"ท่านเห็นว่าปัญหาส่วนใหญ่เป็นสิ่งที่ท่านสามารถแก้ไขได้",isReverse:false},
-      {id:7,question:"ท่านสามารถทำใจยอมรับได้สำหรับปัญหาที่ยากจะแก้ไข (เมื่อมีปัญหา)",isReverse:false},
-      {id:8,question:"ท่านรู้สึกยินดีกับความสำเร็จของคนอื่น",isReverse:false},
-      {id:9,question:"ท่านรู้สึกเห็นอกเห็นใจเมื่อผู้อื่นมีทุกข์",isReverse:false},
-      {id:10,question:"ท่านพึงพอใจกับความสามารถของตนเอง",isReverse:false},
-      {id:11,question:"ท่านรู้สึกภูมิใจในตนเอง",isReverse:false},
-      {id:12,question:"ท่านมีเพื่อนหรือคนอื่นๆ ในสังคมคอยช่วยเหลือท่าน เมื่อท่านต้องการ",isReverse:false},
-      {id:13,question:"ครอบครัวของท่านมีความรักและผูกพันต่อกัน",isReverse:false},
-      {id:14,question:"ถ้าท่านเจ็บป่วยท่านมั่นใจว่าครอบครัวของท่านจะดูแลท่านเป็นอย่างดี",isReverse:false},
-      {id:15,question:"สมาชิกของครอบครัวให้ความช่วยเหลือท่าน",isReverse:false}
-    ];
-    const options=[{text:"ไม่เลย",value:0},{text:"เล็กน้อย",value:1},{text:"มาก",value:2},{text:"มากที่สุด",value:3}];
-    let currentQuestionIndex=0; let answers=[];
-
-    function displayQuestions(){
-      const container=document.getElementById('questionsContainer');
-      container.innerHTML='';
-      questions.forEach((q,index)=>{
-        const div=document.createElement('div');
-        div.className='question-container';
-        div.style.display=index===0?'block':'none';
-        div.id=`question-${index}`;
-        const opts=options.map(o=>`<label class="option"><input type="radio" name="question-${index}" value="${o.value}" onchange="selectAnswer(${index},${o.value})"><span>${o.text}</span></label>`).join('');
-        div.innerHTML=`<div class="question">${q.id}. ${q.question}</div><div class="options">${opts}</div>`;
-        container.appendChild(div);
-      });
-    }
-
-    function selectAnswer(questionIndex,value){
-      answers[questionIndex]=value;
-      updateProgress();
-      if(questionIndex<questions.length-1){setTimeout(()=>{showQuestion(questionIndex+1);},400);}else{
-        // last question answered
-        document.getElementById('completedMessage').style.display='block';
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ยินดีต้อนรับเข้าสู่ AUDIT Help</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-    }
-
-    function showQuestion(index){
-      document.getElementById(`question-${currentQuestionIndex}`).style.display='none';
-      currentQuestionIndex=index;
-      document.getElementById(`question-${currentQuestionIndex}`).style.display='block';
-      document.getElementById('currentQuestion').textContent=currentQuestionIndex+1;
-      updateProgress();
-    }
-
-    function updateProgress(){
-      const answered=answers.filter(a=>a!==undefined).length;
-      const pct=(answered/questions.length)*100; // FIX: แบ่งด้วยจำนวนคำถามทั้งหมด
-      document.getElementById('progressBar').style.width=pct+'%';
-      const submitBtn=document.getElementById('submitBtn');
-      if(answered===questions.length){submitBtn.disabled=false;document.getElementById('completedMessage').style.display='block';}
-    }
-
-    function calculateResult(){
-      let totalScore=0;
-      answers.forEach((ans,idx)=>{
-        const q=questions[idx];
-        if(q.isReverse){totalScore+=(3-ans)+1;} else {totalScore+=ans+1;}
-      });
-      const maxScore=60; // for reference
-      let level, levelClass, recs, desc;
-      if(totalScore>=50){
-        level='สุขภาพจิตดีกว่าคนทั่วไป'; levelClass='result-excellent'; desc='ท่านมีคะแนนสุขภาพจิตของท่านดีกว่าคนทั่วไป';
-        recs=['สามารถส่งเสริมสุขภาพจิตที่ดีให้คงอยู่ด้วยการทำกิจกรรมสร้างความสุข 5 มิติ','ตามตารางกิจกรรมสร้างสุข 5 มิติรายสัปดาห์'];
-      }else if(totalScore>=43){
-        level='สุขภาพจิตเท่ากับคนทั่วไป'; levelClass='result-normal'; desc='ท่านมีคะแนนสุขภาพจิตอยู่ในเกณฑ์เท่ากับคนทั่วไป';
-        recs=['สามารถส่งเสริมสุขภาพจิตที่ดีให้คงอยู่ด้วยการทำกิจกรรมสร้างความสุข 5 มิติ','ตามตารางกิจกรรมสร้างสุข 5 มิติรายสัปดาห์'];
-      }else{
-        level='สุขภาพจิตต่ำกว่าคนทั่วไป'; levelClass='result-below'; desc='ท่านมีคะแนนสุขภาพจิตอยู่ในกลุ่มต่ำกว่าคนทั่วไป';
-        recs=['ให้การช่วยเหลือตนเองเบื้องต้น','โดยพูดคุยปรึกษากับคนที่ท่านไว้วางใจ','และทำกิจกรรมสร้างสุข 5 มิติตามตารางกิจกรรมสร้างสุข 5 มิติรายสัปดาห์','หรือขอรับบริการปรึกษาจากสถานบริการสาธารณสุขใกล้บ้าน'];
+      :root {
+        --primary: #2196f3;
+        --primary-dark: #1976d2;
+        --accent: #4a90e2;
+        --accent-2: #7b68ee;
+        --bg-grad: linear-gradient(
+          135deg,
+          var(--accent) 0%,
+          var(--accent-2) 100%
+        );
+        --tile-grad: linear-gradient(135deg, #6366f1, #3b82f6);
+        --text: #0f172a;
+        --muted: #64748b;
+        --paper: #ffffff;
+        --ring: #4f46e5;
+        --border: #e0e0e0;
+        --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06),
+          0 4px 10px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 6px 18px rgba(0, 0, 0, 0.16);
       }
-      const html=`<div class="result-card ${levelClass}"><div class="result-score">${totalScore} / ${maxScore}</div><div class="result-title">${level}</div><div class="result-description">${desc}</div><div class="recommendations"><h4>คำแนะนำสำหรับท่าน:</h4><ul>${recs.map(r=>`<li>${r}</li>`).join('')}</ul></div></div><div style="background:#f8f9fa;padding:16px;border-radius:10px;margin-top:14px"><h4 style="color:var(--primary);margin-bottom:8px">หมายเหตุสำคัญ</h4><p><strong>แบบประเมิน T-GMHA-15</strong> เป็นเครื่องมือคัดกรองเบื้องต้นเท่านั้น ผลการประเมินไม่สามารถใช้แทนการวินิจฉัยทางการแพทย์ได้ หากท่านกังวลเกี่ยวกับสุขภาพจิตของตนเอง ควรปรึกษาผู้เชี่ยวชาญเพื่อการดูแลที่เหมาะสม</p></div>`;
-      document.getElementById('resultContent').innerHTML=html;
-      goTo(3);
-    }
+      body {
+        font-family: "Sarabun", ui-sans-serif, system-ui;
+        background: var(--bg-grad);
+        min-height: 100vh;
+        padding: 20px;
+        color: var(--text);
+      }
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        background: var(--paper);
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
 
-    function resetAssessment(){
-      currentQuestionIndex=0; answers=[];
-      document.getElementById('progressBar').style.width='0%';
-      document.getElementById('currentQuestion').textContent='1';
-      document.getElementById('submitBtn').disabled=true;
-      document.getElementById('completedMessage').style.display='none';
-      document.getElementById('assessmentForm').reset();
-      displayQuestions();
-      goTo(2);
-    }
+      /* HEADER */
+      .header {
+        background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+        color: #fff;
+        padding: 28px;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 2.1em;
+        margin-bottom: 6px;
+      }
+      .header .subtitle {
+        font-size: 1.15em;
+        opacity: 0.95;
+      }
 
-    // init
-    window.onload=function(){displayQuestions();};
-  </script>
-</body>
+      /* PAGES */
+      .content {
+        padding: 34px;
+      }
+      .page {
+        display: none;
+      }
+      .page.active {
+        display: block;
+      }
+
+      /* LANDING (PAGE 1) */
+      .landing-wrap {
+        display: grid;
+        gap: 18px;
+      }
+      @media (min-width: 640px) {
+        .landing-wrap {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .tile {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 160px;
+        padding: 22px 24px;
+        border-radius: 18px;
+        background: var(--tile-grad);
+        color: #fff;
+        text-decoration: none;
+        box-shadow: var(--shadow-sm);
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+      }
+      .tile:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+      .tile:focus {
+        outline: 3px solid var(--ring);
+        outline-offset: 3px;
+      }
+      .tile-label {
+        font-weight: 700;
+        font-size: 1.35em;
+      }
+      .tile-sub {
+        opacity: 0.9;
+        margin-top: 6px;
+      }
+
+      /* SHARED BLOCKS */
+      .instructions {
+        line-height: 1.8;
+        color: #333;
+        margin-bottom: 24px;
+      }
+      .instructions h3 {
+        color: var(--primary);
+        margin: 18px 0 10px;
+      }
+      .instructions ul {
+        margin-left: 20px;
+        margin-bottom: 12px;
+      }
+
+      .question-container {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 5px solid var(--primary);
+      }
+      .question {
+        font-size: 1.3em;
+        margin-bottom: 12px;
+        color: #333;
+        font-weight: 500;
+      }
+      .options {
+        display: grid;
+        gap: 10px;
+      }
+      .option {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        background: #fff;
+        border-radius: 8px;
+        border: 2px solid #e0e0e0;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .option:hover {
+        border-color: var(--primary);
+        background: #e3f2fd;
+      }
+      .option input[type="radio"] {
+        margin-right: 12px;
+        accent-color: var(--primary);
+        transform: scale(1.1);
+      }
+
+      .btn {
+        background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+        color: #fff;
+        border: none;
+        padding: 14px 26px;
+        border-radius: 24px;
+        font-size: 1.05em;
+        cursor: pointer;
+        transition: 0.2s;
+        margin: 8px;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+      }
+      .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e0e0e0;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+      .progress {
+        height: 100%;
+        background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+        transition: width 0.3s;
+        border-radius: 4px;
+      }
+
+      /* RESULTS */
+      .result-card {
+        padding: 26px;
+        border-radius: 15px;
+        margin: 18px 0;
+        text-align: center;
+      }
+      .result-excellent {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        border: 2px solid #28a745;
+      }
+      .result-warning {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        border: 2px solid #ffc107;
+      }
+      .result-danger {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        border: 2px solid #dc3545;
+      }
+      .result-severe {
+        background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+        border: 2px solid #17a2b8;
+      }
+      .result-normal {
+        background: linear-gradient(135deg, #cce5ff, #b3d9ff);
+        border: 2px solid var(--primary);
+      }
+      .result-below {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        border: 2px solid #ffc107;
+      }
+      .result-score {
+        font-size: 2.6em;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .result-title {
+        font-size: 1.35em;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+      .result-description {
+        font-size: 1.05em;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+      .recommendations {
+        background: #fff;
+        padding: 18px;
+        border-radius: 10px;
+        margin-top: 16px;
+        text-align: left;
+      }
+      .recommendations h4 {
+        color: var(--primary);
+        margin-bottom: 10px;
+      }
+      .warning-box {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 16px 0;
+      }
+      .warning-box h4 {
+        color: #856404;
+        margin-bottom: 8px;
+      }
+
+      /* PAGE 4: ADVICE */
+      .advice-grid {
+        display: grid;
+        gap: 14px;
+      }
+      @media (min-width: 680px) {
+        .advice-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .advice-card {
+        background: #f8f9fa;
+        border: 1px solid var(--border);
+        padding: 16px;
+        border-radius: 12px;
+      }
+      .advice-card h4 {
+        color: var(--primary);
+        margin-bottom: 8px;
+      }
+      .advice-card ul {
+        margin-left: 18px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 10px;
+          border-radius: 10px;
+        }
+        .header {
+          padding: 22px;
+        }
+        .header h1 {
+          font-size: 1.8em;
+        }
+        .content {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>ยินดีต้อนรับเข้าสู่ AUDIT Help</h1>
+        <p class="subtitle">
+          ----
+        </p>
+      </div>
+
+      <!-- PAGE 1 : LANDING -->
+      <div id="page1" class="page active">
+        <div class="content">
+          <div class="landing-wrap" aria-label="เมนูหลัก">
+            <a class="tile" tabindex="0" role="button" onclick="goTo(2)">
+              <span class="tile-label">แบบประเมินระดับการดื่มเครื่องดื่มแอลกอฮอล์</span>
+              <span class="tile-sub"></span>
+            </a>
+            <a class="tile" tabindex="0" role="button" onclick="goTo(4)">
+              <span class="tile-label">ช่องทางการขอคำปรึกษา</span>
+              <span class="tile-sub"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 2 : ASSESSMENT -->
+      <div id="page2" class="page">
+        <div class="content">
+          <div class="instructions">
+            <h3>แบบประเมินปัญหาการดื่มเครื่องดื่มแอลกอฮอล์ (AUDIT)</h3>
+            <p>
+              กรุณาเลือกคำตอบที่ตรงกับความเป็นจริงของท่านมากที่สุดเพียงคำตอบเดียว
+            </p>
+          </div>
+          <div class="progress-bar">
+            <div class="progress" id="progressBar" style="width: 0%"></div>
+          </div>
+          <p class="text-center" style="margin-bottom: 16px; font-size: 1.15em">
+            คำถามที่ <span id="currentQuestion">1</span> จาก 10
+          </p>
+          <form id="assessmentForm">
+            <div id="questionsContainer"></div>
+            <div
+              id="completedMessage"
+              style="
+                display: none;
+                padding: 16px;
+                background: #e8f5e9;
+                border: 1px solid #43a047;
+                border-radius: 10px;
+                color: #2e7d32;
+                font-weight: 700;
+                text-align: center;
+                margin-top: 16px;
+              "
+            >
+              ✅ คุณได้ตอบคำถามครบทั้ง 10 ข้อแล้ว
+            </div>
+          </form>
+          <div class="text-center">
+            <button
+              class="btn"
+              id="submitBtn"
+              onclick="calculateResult()"
+              disabled
+            >
+              ดูผลการประเมิน
+            </button>
+            <button class="btn" onclick="goTo(1)" type="button">
+              กลับหน้าเมนู
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 3 : RESULTS -->
+      <div id="page3" class="page">
+        <div class="content">
+          <div id="resultContent"></div>
+          <div class="text-center">
+            <button class="btn" onclick="resetAssessment()">
+              ทำแบบประเมินใหม่
+            </button>
+            <button class="btn" onclick="window.print()">พิมพ์ผลลัพธ์</button>
+            <button class="btn" onclick="goTo(4)">ดูคำแนะนำ</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 4 : CONSULTATION CENTERS -->
+      <div id="page4" class="page">
+        <div class="content">
+          <h3 style="color: var(--primary); margin-bottom: 20px; text-align: center">
+            ศูนย์รับให้คำปรึกษาปัญหาการดื่มเครื่องดื่มแอลกอฮอล์
+          </h3>
+          
+          <div class="advice-card" style="margin-bottom: 20px">
+            <h4>ช่องทางการขอคำปรึกษา</h4>
+            <ol style="margin-left: 20px; line-height: 1.8">
+              <li>ศูนย์ปรึกษาเพื่อการเลิกสุราและการเสพติด (1413 สายด่วนเลิกเหล้า)</li>
+              <li>โรงพยาบาลรัฐทั่วประเทศ</li>
+            </ol>
+          </div>
+
+          <div class="warning-box" style="text-align: center">
+            <h4>ขอขอบคุณ:</h4>
+            <p>แผนงานการพัฒนาระบบ รูปแบบ และวิธีการบำบัดรักษา<br>
+            ผู้มีปัญหาการบริโภคสุราแบบบูรณาการ (ผรส.)</p>
+          </div>
+
+          <div class="text-center" style="margin-top: 20px">
+            <button class="btn" onclick="goTo(1)">กลับหน้าเมนู</button>
+            <button class="btn" onclick="goTo(2)">ทำแบบประเมิน</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // -------- NAV UTILS --------
+      function goTo(n) {
+        for (const el of document.querySelectorAll(".page"))
+          el.classList.remove("active");
+        document.getElementById("page" + n).classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // -------- QUESTIONS --------
+      const questions = [
+        {
+          question: "1. คุณดื่มสุราบ่อยเพียงไร",
+          options: [
+            "ไม่เคยเลย",
+            "เดือนละครั้งหรือน้อยกว่า",
+            "2-4 ครั้งต่อเดือน",
+            "2-3 ครั้งต่อสัปดาห์",
+            "4 ครั้งขึ้นไปต่อสัปดาห์"
+          ],
+          scores: [0, 1, 2, 3, 4]
+        },
+        {
+          question: "2. เวลาที่คุณดื่มสุรา โดยทั่วไปแล้วคุณดื่มเบียร์ เช่น สิงห์ ไฮเนเกน ลีโอ เชียร์ ไทเกอร์ ช้าง หรือเหล้าเช่น แม่โขง หงส์ทอง หงส์ทิพย์เหล้าขาว 40 ดีกรี ประมาณเท่าไรต่อวัน",
+          options: [
+            "ดื่มเบียร์ 1-1.5 กระป๋อง หรือ 1/2 – 3/4 ขวด หรือดื่มเหล้า 2-3 ฝา",
+            "ดื่มเบียร์ 2-3 กระป๋อง หรือ 1-1.5 ขวด หรือดื่มเหล้า 1/4 แบน",
+            "ดื่มเบียร์ 3.5-4 กระป๋อง หรือ 2 ขวด หรือดื่มเหล้า 1/2 แบน",
+            "ดื่มเบียร์ 4.5-7 กระป๋อง หรือ 3-4 ขวด หรือดื่มเหล้า 3/4 แบน",
+            "ดื่มเบียร์ 7 กระป๋องขึ้นไป หรือ 4 ขวดขึ้นไป หรือดื่มเหล้า 1 แบนขึ้นไป"
+          ],
+          scores: [0, 1, 2, 3, 4]
+        },
+        {
+          question: "3. บ่อยครั้งเพียงไรที่คุณดื่มตั้งแต่ 6 ดื่มมาตรฐานขึ้นไป หรือเบียร์ 4 กระป๋องหรือ 2 ขวดใหญ่ขึ้นไป หรือเหล้าวิสกี้ 3 เป๊กขึ้นไป",
+          options: [
+            "ไม่เคยเลย",
+            "น้อยกว่าเดือนละครั้ง",
+            "เดือนละครั้ง",
+            "สัปดาห์ละครั้ง",
+            "ทุกวัน หรือเกือบทุกวัน"
+          ],
+          scores: [0, 1, 2, 3, 4]
+        },
+        {
+          question: "4. ในช่วงหนึ่งปีที่แล้ว มีบ่อยครั้งเพียงไรที่คุณพบว่าคุณไม่สามารถหยุดดื่มได้ หากคุณได้เริ่มดื่มไปแล้ว",
+          options: [
+            "ไม่เคยเลย",
+            "น้อยกว่าเดือนละครั้ง",
+            "เดือนละครั้ง",
+            "สัปดาห์ละครั้ง",
+            "ทุกวันหรือเกือบทุกวัน"
+          ],
+          scores: [0, 1, 2, 3, 4]
+        },
+        {
+          question: "5. ในช่วงหนึ่งปีที่แล้ว มีบ่อยครั้งเพียงไรที่คุณไม่ได้ทำสิ่งที่คุณควรจะทำตามปกติ เพราะคุณมัวแต่ไปดื่มสุราเสีย",
+          options: [
+            "ไม่เคยเลย",
+            "น้อยกว่าเดือนละครั้ง",
+            "เดือนละครั้ง",
+            "สัปดาห์ละครั้ง",
+            "ทุกวันหรือเกือบทุกวัน"
+          ],
+          scores: [0, 1, 2, 3, 4]
+        },
+        {
+          question: "6. ในช่วงหนึ่งปีที่แล้ว มีบ่อยเพียงไรที่คุณต้องรีบดื่มสุราทันทีในตอนเช้า เพื่อจะได้ดำเนินชีวิตตามปกติหรือถอนอาการเมาค้างจากการดื่มหนักในคืนที่ผ่านมา",
+          options: [
+            "ไม่เคยเลย",
+            "น้อยกว่าเดือนละครั้ง",
+            "เดือนละครั้ง",
+            "สัปดาห์ละครั้ง",
+            "ทุกวันหรือเกือบทุกวัน"
+          ],
+          scores: [0, 1, 2, 3, 4]
+        },
+        {
+          question: "7. ในช่วงหนึ่งปีที่แล้ว มีบ่อยเพียงไรที่คุณรู้สึกไม่ดี โกรธหรือเสียใจ เนื่องจากคุณได้ทำบางสิ่งบางอย่างลงไปขณะที่คุณดื่มสุราเข้าไป",
+          options: [
+            "ไม่เคยเลย",
+            "น้อยกว่าเดือนละครั้ง",
+            "เดือนละครั้ง",
+            "สัปดาห์ละครั้ง",
+            "ทุกวันหรือเกือบทุกวัน"
+          ],
+          scores: [0, 1, 2, 3, 4]
+        },
+        {
+          question: "8. ในช่วงหนึ่งปีที่แล้ว มีบ่อยเพียงไรที่คุณไม่สามารถจำได้ว่าเกิดอะไรขึ้นในคืนที่ผ่านมา เพราะว่าคุณได้ดื่มสุราเข้าไป",
+          options: [
+            "ไม่เคยเลย",
+            "น้อยกว่าเดือนละครั้ง",
+            "เดือนละครั้ง",
+            "สัปดาห์ละครั้ง",
+            "ทุกวันหรือเกือบทุกวัน"
+          ],
+          scores: [0, 1, 2, 3, 4]
+        },
+        {
+          question: "9. ตัวคุณเองหรือคนอื่น เคยได้รับบาดเจ็บซึ่งเป็นผลจากการดื่มสุราของคุณหรือไม่",
+          options: [
+            "ไม่เคยเลย",
+            "เคย แต่ไม่ได้เกิดขึ้นในปีที่แล้ว",
+            "เคยเกิดขึ้นในช่วงหนึ่งปีที่แล้ว"
+          ],
+          scores: [0, 2, 4]
+        },
+        {
+          question: "10. เคยมีแพทย์ หรือบุคลากรทางการแพทย์หรือเพื่อนฝูงหรือญาติพี่น้องแสดงความเป็นห่วงเป็นใยต่อการดื่มสุราของคุณหรือไม่",
+          options: [
+            "ไม่เคยเลย",
+            "เคย แต่ไม่ได้เกิดขึ้นในปีที่แล้ว",
+            "เคยเกิดขึ้นในช่วงหนึ่งปีที่แล้ว"
+          ],
+          scores: [0, 2, 4]
+        }
+      ];
+      let currentQuestionIndex = 0;
+      let answers = [];
+
+      function displayQuestions() {
+        const container = document.getElementById("questionsContainer");
+        container.innerHTML = "";
+        questions.forEach((q, index) => {
+          const div = document.createElement("div");
+          div.className = "question-container";
+          div.style.display = index === 0 ? "block" : "none";
+          div.id = `question-${index}`;
+          const opts = q.options
+            .map(
+              (option, optIndex) =>
+                `<label class="option"><input type="radio" name="question-${index}" value="${optIndex}" onchange="selectAnswer(${index},${optIndex})"><span>${option}</span></label>`
+            )
+            .join("");
+          div.innerHTML = `<div class="question">${q.question}</div><div class="options">${opts}</div>`;
+          container.appendChild(div);
+        });
+      }
+
+      function selectAnswer(questionIndex, value) {
+        answers[questionIndex] = value;
+        updateProgress();
+        if (questionIndex < questions.length - 1) {
+          setTimeout(() => {
+            showQuestion(questionIndex + 1);
+          }, 400);
+        } else {
+          // last question answered
+          document.getElementById("completedMessage").style.display = "block";
+        }
+      }
+
+      function showQuestion(index) {
+        document.getElementById(
+          `question-${currentQuestionIndex}`
+        ).style.display = "none";
+        currentQuestionIndex = index;
+        document.getElementById(
+          `question-${currentQuestionIndex}`
+        ).style.display = "block";
+        document.getElementById("currentQuestion").textContent =
+          currentQuestionIndex + 1;
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const answered = answers.filter((a) => a !== undefined).length;
+        const pct = (answered / questions.length) * 100; // FIX: แบ่งด้วยจำนวนคำถามทั้งหมด
+        document.getElementById("progressBar").style.width = pct + "%";
+        const submitBtn = document.getElementById("submitBtn");
+        if (answered === questions.length) {
+          submitBtn.disabled = false;
+          document.getElementById("completedMessage").style.display = "block";
+        }
+      }
+
+      function calculateResult() {
+        let totalScore = 0;
+        answers.forEach((ans, idx) => {
+          totalScore += questions[idx].scores[ans];
+        });
+        
+        let level, levelClass, recs, desc;
+        if (totalScore <= 7) {
+          level = "ผู้ดื่มแบบเสี่ยงต่ำ";
+          levelClass = "result-excellent";
+          desc = "คุณทำได้ดีแล้ว และพยายามรักษาระดับการดื่มของคุณให้ต่ำกว่าหรือไม่เกิดระดับที่เสี่ยงต่ำ";
+          recs = [
+            "ควรรักษาความสมดุลในการดื่ม",
+            "ไม่ควรเพิ่มปริมาณการดื่ม",
+            "สามารถปรึกษาสถานบริการใกล้บ้านหากมีข้อสงสัย"
+          ];
+        } else if (totalScore <= 15) {
+          level = "ผู้ดื่มแบบเสี่ยง";
+          levelClass = "result-warning";
+          desc = "จริง ๆ แล้ว มันอาจไม่ง่ายหรอกที่คุณจะลดการดื่มลงให้อยู่ภายในขีดจำกัด แต่หากคุณเผลอดื่มเกินขีดจำกัดให้พยายามเรียนรู้ว่าเพราะอะไรจึงเป็นเช่นนั้นและวางแผนป้องกันไม่ให้เกิดขึ้นอีก หากคุณระลึกเสมอถึงความสำคัญของการลดความเสี่ยงจากการดื่มลงคุณก็จะสามารถทำได้";
+          recs = [
+            "ลดปริมาณการดื่มให้อยู่ในระดับที่ปลอดภัย",
+            "หลีกเลี่ยงสถานการณ์ที่เสี่ยงต่อการดื่มมากเกินไป",
+            "ปรึกษาแพทย์หรือผู้เชี่ยวชาญหากต้องการความช่วยเหลือ"
+          ];
+        } else if (totalScore <= 19) {
+          level = "ผู้ดื่มแบบอันตราย";
+          levelClass = "result-danger";
+          desc = "คุณควรได้รับการสร้างแรงจูงใจในการปรับเปลี่ยนพฤติกรรม ร่วมกับตั้งเป้าหมายในการลด ละ เลิก หรือปรับเปลี่ยนพฤติกรรมการดื่มเครื่องดื่มแอลกอฮอล์";
+          recs = [
+            "ควรปรับเปลี่ยนพฤติกรรมการดื่มโดยด่วน",
+            "สร้างแรงจูงใจในการลดหรือเลิกดื่ม",
+            "ขอความช่วยเหลือจากผู้เชี่ยวชาญ",
+            "หลีกเลี่ยงสถานการณ์ที่เกี่ยวข้องกับการดื่ม"
+          ];
+        } else {
+          level = "ผู้ดื่มแบบติด";
+          levelClass = "result-severe";
+          desc = "ควรไปพบแพทย์ เพื่อการตรวจวินิจฉัยและวางแผนการบำบัดรักษา";
+          recs = [
+            "ควรปรึกษาแพทย์โดยเร่งด่วน",
+            "ต้องได้รับการตรวจวินิจฉัยและบำบัดรักษา",
+            "อาจต้องเข้ารับการรักษาแบบผู้ป่วยใน",
+            "ขอความช่วยเหลือจากครอบครัวและผู้ใกล้ชิด"
+          ];
+        }
+        const html = `<div class="result-card ${levelClass}"><div class="result-score">${totalScore} คะแนน</div><div class="result-title">${level}</div><div class="result-description">${desc}</div><div class="recommendations"><h4>คำแนะนำสำหรับท่าน:</h4><ul>${recs
+          .map((r) => `<li>● ${r}</li>`)
+          .join("")}</ul></div></div><div style="background:#f8f9fa;padding:16px;border-radius:10px;margin-top:14px"><h4 style="color:var(--primary);margin-bottom:8px">ข้อมูลการติดต่อ</h4><p><strong>แบบประเมิน AUDIT</strong> เป็นเครื่องมือคัดกรองการดื่มเครื่องดื่มแอลกอฮอล์ ผลการประเมินเป็นเพียงข้อมูลเบื้องต้น หากต้องการความช่วยเหลือสามารถติดต่อ ศูนย์ปรึกษาเพื่อการเลิกสุราและการเสพติด โทร 1413 หรือโรงพยาบาลใกล้บ้าน</p></div>`;
+        document.getElementById("resultContent").innerHTML = html;
+        goTo(3);
+      }
+
+      function resetAssessment() {
+        currentQuestionIndex = 0;
+        answers = [];
+        document.getElementById("progressBar").style.width = "0%";
+        document.getElementById("currentQuestion").textContent = "1";
+        document.getElementById("submitBtn").disabled = true;
+        document.getElementById("completedMessage").style.display = "none";
+        document.getElementById("assessmentForm").reset();
+        displayQuestions();
+        goTo(2);
+      }
+
+      // init
+      window.onload = function () {
+        displayQuestions();
+      };
+    </script>
+  </body>
 </html>
